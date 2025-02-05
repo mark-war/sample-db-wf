@@ -1,4 +1,4 @@
-USE SampleDB;
+USE WorkflowDatabase;
 GO
 
 INSERT INTO Users (Name, Email) VALUES ('John Doe', 'john@example.com');

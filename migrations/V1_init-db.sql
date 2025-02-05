@@ -1,7 +1,7 @@
-CREATE DATABASE SampleDB;
+CREATE DATABASE WorkflowDatabase;
 GO
 
-USE SampleDB;
+USE WorkflowDatabase;
 GO
 
 CREATE TABLE Users (

@@ -27,3 +27,7 @@ jobs:
       - name: Run Flyway Migrations
         run: |
           /opt/flyway/flyway -url=${{ secrets.DB_URL }} -user=${{ secrets.DB_USER }} -password=${{ secrets.DB_PASSWORD }} -locations=filesystem:./migrations migrate
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

@@ -24,7 +24,7 @@ jobs:
 
       - name: Test Database Connection
         run: |
-          timeout 5 bash -c "</dev/tcp/192.168.4.37/1433" && echo "Port open" || echo "Cannot connect"
+          nc -zv 192.168.4.37 1433 && echo "Port open" || echo "Cannot connect"
 
       - name: Run Flyway Migrations
         run: |

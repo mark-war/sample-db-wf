@@ -29,7 +29,7 @@ jobs:
         shell: powershell
 
       - name: Install Java
-        run: choco install openjdk11
+        run: choco install openjdk11 --force
         shell: powershell
 
       - name: Set up Flyway

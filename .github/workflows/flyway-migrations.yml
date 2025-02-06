@@ -33,6 +33,6 @@ jobs:
                              -password="${{ secrets.DB_PASSWORD }}" \
                              -locations=filesystem:./migrations migrate
         env:
-          DB_URL: jdbc:sqlserver://192.168.4.37\SQLEXPRESS;databaseName=yourDB;encrypt=false;
+          DB_URL: jdbc:sqlserver://192.168.4.37,1433\SQLEXPRESS;databaseName=yourDB;encrypt=false;
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

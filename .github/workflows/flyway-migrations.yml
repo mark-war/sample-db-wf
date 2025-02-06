@@ -43,7 +43,7 @@ jobs:
           echo "Extraction complete."
 
           echo "Adding Flyway to PATH..."
-          echo "C:\opt\flyway" >> $env:GITHUB_ENV
+          echo "PATH=C:\opt\flyway;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           echo "Flyway setup complete."
         shell: powershell
 

@@ -30,7 +30,7 @@ jobs:
 
       - name: Install Java
         run: choco install openjdk11
-        shell: pwsh
+        shell: powershell
 
       - name: Set up Flyway
         run: |

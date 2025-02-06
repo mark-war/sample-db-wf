@@ -34,17 +34,19 @@ jobs:
 
       - name: Set up Flyway
         run: |
-          echo "Downloading Flyway..."
-          Invoke-WebRequest -Uri "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.3.1/flyway-commandline-11.3.1-windows-x64.zip" -OutFile "flyway.zip"
-          echo "Download complete."
+          $flywayPath = "C:\opt\flyway\flyway-11.3.1"
 
-          echo "Removing existing Flyway directory..."
-          if (Test-Path "C:\opt\flyway") { Remove-Item -Recurse -Force "C:\opt\flyway" }
-          echo "Existing Flyway directory removed."
+          if (Test-Path $flywayPath) {
+              echo "Flyway is already installed. Skipping download."
+          } else {
+              echo "Downloading Flyway..."
+              Invoke-WebRequest -Uri "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.3.1/flyway-commandline-11.3.1-windows-x64.zip" -OutFile "flyway.zip"
+              echo "Download complete."
 
-          echo "Extracting Flyway..."
-          Expand-Archive -Path "flyway.zip" -DestinationPath "C:\opt\flyway" -Force
-          echo "Extraction complete."
+              echo "Extracting Flyway..."
+              Expand-Archive -Path "flyway.zip" -DestinationPath "C:\opt\flyway" -Force
+              echo "Extraction complete."
+          }
 
           echo "Adding Flyway to PATH..."
           echo "PATH=C:\opt\flyway;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
@@ -53,7 +55,7 @@ jobs:
 
       - name: Test Database Connection
         run: |
-          nc -zv 192.168.4.37 1433 && echo "Port open" || echo "Cannot connect"
+          if ((Test-NetConnection -ComputerName 192.168.4.37 -Port 1433).TcpTestSucceeded) { echo "Port open" } else { echo "Cannot connect" }
 
       - name: Run Flyway Migrations
         run: |

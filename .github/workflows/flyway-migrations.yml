@@ -15,14 +15,17 @@ jobs:
 
       - name: Install Chocolatey
         run: |
+          [Environment]::SetEnvironmentVariable('CHOCOLATEY_INSTALL', 'C:\Chocolatey', [System.EnvironmentVariableTarget]::Machine)
           Set-ExecutionPolicy Bypass -Scope Process -Force;
           [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
           iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
         shell: powershell
+        continue-on-error: true
 
       - name: Install Java
-        run: choco install openjdk11
+        run: choco install openjdk11 --params "/ChocolateyInstall=C:\Chocolatey"
         shell: powershell
+        continue-on-error: true
 
       - name: Set up Flyway
         run: |

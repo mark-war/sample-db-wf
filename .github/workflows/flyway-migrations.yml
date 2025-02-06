@@ -20,14 +20,19 @@ jobs:
         run: |
           wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.3.1/flyway-commandline-11.3.1-linux-x64.tar.gz | tar xz
           sudo mv flyway-*/ /opt/flyway
-          echo "export PATH=\$PATH:/opt/flyway" >> ~/.bashrc
-          echo "export PATH=\$PATH:/opt/flyway" >> ~/.profile
-          export PATH=$PATH:/opt/flyway
+          echo "PATH=/opt/flyway:$PATH" >> $GITHUB_ENV
+
+      - name: Test Database Connection
+        run: |
+          timeout 5 bash -c "</dev/tcp/192.168.4.37/1433" && echo "Port open" || echo "Cannot connect"
 
       - name: Run Flyway Migrations
         run: |
-          /opt/flyway/flyway -url=$DB_URL -user=$DB_USER -password=$DB_PASSWORD -locations=filesystem:./migrations migrate
+          /opt/flyway/flyway -url="${{ secrets.DB_URL }}" \
+                             -user="${{ secrets.DB_USER }}" \
+                             -password="${{ secrets.DB_PASSWORD }}" \
+                             -locations=filesystem:./migrations migrate
         env:
-          DB_URL: ${{ secrets.DB_URL }}
+          DB_URL: jdbc:sqlserver://192.168.4.37\SQLEXPRESS;databaseName=yourDB;encrypt=false;
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

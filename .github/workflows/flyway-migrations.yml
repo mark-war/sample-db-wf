@@ -59,10 +59,12 @@ jobs:
 
       - name: Run Flyway Migrations
         run: |
-          /opt/flyway/flyway -url="${{ secrets.DB_URL }}" \
-                             -user="${{ secrets.DB_USER }}" \
-                             -password="${{ secrets.DB_PASSWORD }}" \
-                             -locations=filesystem:./migrations migrate
+          echo "Running Flyway migration..."
+          C:\opt\flyway\flyway -url="$env:DB_URL" `
+                              -user="$env:DB_USER" `
+                              -password="$env:DB_PASSWORD" `
+                              -locations=filesystem:./migrations migrate
+        shell: powershell
         env:
           DB_URL: jdbc:sqlserver://192.168.4.37,1433\SQLEXPRESS;databaseName=yourDB;encrypt=false;
           DB_USER: ${{ secrets.DB_USER }}

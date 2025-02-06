@@ -35,20 +35,17 @@ jobs:
       - name: Set up Flyway
         run: |
           echo "Downloading Flyway..."
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.3.1/flyway-commandline-11.3.1-linux-x64.tar.gz -OutFile flyway-commandline-11.3.1-linux-x64.tar.gz
+          Invoke-WebRequest -Uri "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.3.1/flyway-commandline-11.3.1-windows-x64.zip" -OutFile "flyway.zip"
           echo "Download complete."
 
           echo "Extracting Flyway..."
-          tar -xzvf flyway-commandline-11.3.1-linux-x64.tar.gz
+          Expand-Archive -Path "flyway.zip" -DestinationPath "C:\opt\flyway"
           echo "Extraction complete."
-
-          echo "Moving Flyway files to destination..."
-          Move-Item -Path flyway-* -Destination "C:\opt\flyway"
-          echo "Files moved."
 
           echo "Adding Flyway to PATH..."
           echo "C:\opt\flyway" >> $env:GITHUB_ENV
           echo "Flyway setup complete."
+        shell: powershell
 
       - name: Test Database Connection
         run: |

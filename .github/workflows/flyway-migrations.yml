@@ -49,7 +49,7 @@ jobs:
           }
 
           echo "Adding Flyway to PATH..."
-          echo "PATH=C:\opt\flyway;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          echo "PATH=C:\opt\flyway\flyway-11.3.1;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           echo "Flyway setup complete."
         shell: powershell
 
@@ -60,7 +60,7 @@ jobs:
       - name: Run Flyway Migrations
         run: |
           echo "Running Flyway migration..."
-          C:\opt\flyway\flyway -url="$env:DB_URL" `
+          C:\opt\flyway\flyway-11.3.1\flyway -url="$env:DB_URL" `
                               -user="$env:DB_USER" `
                               -password="$env:DB_PASSWORD" `
                               -locations=filesystem:./migrations migrate

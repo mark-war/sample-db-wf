@@ -38,8 +38,12 @@ jobs:
           Invoke-WebRequest -Uri "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.3.1/flyway-commandline-11.3.1-windows-x64.zip" -OutFile "flyway.zip"
           echo "Download complete."
 
+          echo "Removing existing Flyway directory..."
+          if (Test-Path "C:\opt\flyway") { Remove-Item -Recurse -Force "C:\opt\flyway" }
+          echo "Existing Flyway directory removed."
+
           echo "Extracting Flyway..."
-          Expand-Archive -Path "flyway.zip" -DestinationPath "C:\opt\flyway"
+          Expand-Archive -Path "flyway.zip" -DestinationPath "C:\opt\flyway" -Force
           echo "Extraction complete."
 
           echo "Adding Flyway to PATH..."

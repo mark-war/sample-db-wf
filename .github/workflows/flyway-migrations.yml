@@ -106,18 +106,26 @@ jobs:
 
           echo "Running command: $flywayCommand $arguments"
 
-          # Run Flyway using Start-Process for proper argument handling
-          $process = Start-Process -FilePath $flywayCommand -ArgumentList $arguments -PassThru -Wait
-          $exitCode = $process.ExitCode
+          # Capture detailed output from Flyway migration
+          try {
+            $process = Start-Process -FilePath $flywayCommand -ArgumentList $arguments -PassThru -Wait -RedirectStandardOutput "C:\temp\flyway-output.log" -RedirectStandardError "C:\temp\flyway-error.log"
+            $exitCode = $process.ExitCode
 
-          echo "Flyway migration exit code: $exitCode"
+            # Log Flyway output and error
+            Write-Host "Flyway Standard Output: $(Get-Content 'C:\temp\flyway-output.log')"
+            Write-Host "Flyway Error Output: $(Get-Content 'C:\temp\flyway-error.log')"
 
-          # Check if migration was successful
-          if ($exitCode -ne 0) {
-            Write-Error "Flyway migration failed with exit code $exitCode"
-            exit $exitCode
-          } else {
-            echo "Flyway migration completed successfully."
+            echo "Flyway migration exit code: $exitCode"
+
+            if ($exitCode -ne 0) {
+              Write-Error "Flyway migration failed with exit code $exitCode"
+              exit $exitCode
+            } else {
+              echo "Flyway migration completed successfully."
+            }
+          } catch {
+            Write-Error "Flyway migration encountered an error: $_"
+            exit 1
           }
         shell: powershell
         env:

@@ -39,6 +39,7 @@ jobs:
         shell: powershell
 
       - name: Set up Flyway
+        shell: powershell
         run: |
           $flywayPath = "C:\opt\flyway\flyway-11.3.1"
 
@@ -57,12 +58,15 @@ jobs:
           echo "Adding Flyway to PATH..."
           echo "PATH=C:\opt\flyway\flyway-11.3.1;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           echo "Flyway setup complete."
-        shell: powershell
 
-          echo "Downloading SQL Server JDBC Driver..."
+          # Download SQL Server JDBC Driver
+          Write-Output "Downloading SQL Server JDBC Driver..."
           Invoke-WebRequest -Uri "https://aka.ms/download-jdbc-driver" -OutFile "sqljdbc.zip"
+          Write-Output "Download complete."
+
+          Write-Output "Extracting SQL Server JDBC Driver..."
           Expand-Archive -Path "sqljdbc.zip" -DestinationPath "C:\opt\flyway\drivers" -Force
-          echo "SQL Server JDBC Driver installed."
+          Write-Output "SQL Server JDBC Driver installed."
 
       - name: Test Database Connection
         run: |

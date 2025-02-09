@@ -63,11 +63,14 @@ jobs:
         run: |
           if ((Test-NetConnection -ComputerName 192.168.4.37 -Port 1433).TcpTestSucceeded) { echo "Port open" } else { echo "Cannot connect" }
 
-      - name: Create Database if Not Exists
+      - name: Create database if it doesn't exist
         run: |
           echo "Creating database if it doesn't exist..."
-          sqlcmd -S 192.168.4.37,1433 -U $env:DB_USER -P $env:DB_PASSWORD -d master -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') CREATE DATABASE ArgaamScreener_DEV;"
+          sqlcmd -S 192.168.4.37,1433 -U $Env:DB_USER -P $Env:DB_PASSWORD -d master -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') CREATE DATABASE ArgaamScreener_DEV;"
         shell: powershell
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       - name: Run Flyway Migrations
         run: |

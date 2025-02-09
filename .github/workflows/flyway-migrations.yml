@@ -76,39 +76,36 @@ jobs:
               exit 1
           }
 
-      # Test Database Connection
-      - name: Test Database Connection
-        run: |
-          if ((Test-NetConnection -ComputerName 192.168.4.37 -Port 1433).TcpTestSucceeded) { echo "Port open" } else { echo "Cannot connect" }
+      # # Test Database Connection
+      # - name: Test Database Connection
+      #   run: |
+      #     if ((Test-NetConnection -ComputerName 192.168.4.37 -Port 1433).TcpTestSucceeded) { echo "Port open" } else { echo "Cannot connect" }
 
-        # Create database if it doesn't exist
-      - name: Create database if it doesn't exist
-        run: |
-          echo "Creating database if it doesn't exist..."
-          sqlcmd -S 192.168.4.37,1433 -U $Env:DB_USER -P $Env:DB_PASSWORD -d master -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') CREATE DATABASE ArgaamScreener_DEV;"
-        shell: powershell
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
-      # List migration files
-      - name: List migration files
-        run: |
-          echo "Listing migration files..."
-          dir "C:\Users\mark\Working Directory\sqlserver-db\migrations"
-        shell: powershell
+      #   # Create database if it doesn't exist
+      # - name: Create database if it doesn't exist
+      #   run: |
+      #     echo "Creating database if it doesn't exist..."
+      #     sqlcmd -S 192.168.4.37,1433 -U $Env:DB_USER -P $Env:DB_PASSWORD -d master -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') CREATE DATABASE ArgaamScreener_DEV;"
+      #   shell: powershell
+      #   env:
+      #     DB_USER: ${{ secrets.DB_USER }}
+      #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       # Run Flyway Migrations
       - name: Run Flyway Migrations
         run: |
+          echo "Listing migration files..."
+          # List the files to ensure Flyway can access the migration directory
+          Get-ChildItem -Path "C:\Users\mark\Working Directory\sqlserver-db\migrations"
+
           echo "Running Flyway migration..."
 
-          # Capture both output and error
-          $output = & "C:\opt\flyway\flyway-11.3.1\flyway" -X -databaseType=sqlserver `
-               -url="$env:DB_URL" `
-               -user="$env:DB_USER" `
-               -password="$env:DB_PASSWORD" `
-               -locations="filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations" migrate
+          # Log the Flyway command to ensure it's formed correctly
+          $flywayCommand = "C:\opt\flyway\flyway-11.3.1\flyway -X -databaseType=sqlserver -url='$env:DB_URL' -user='$env:DB_USER' -password='$env:DB_PASSWORD' -locations='filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations' migrate"
+          echo "Running command: $flywayCommand"
+
+          # Run Flyway and capture output and errors
+          $output = & $flywayCommand 2>&1
 
           echo "Flyway migration output: $output"
 

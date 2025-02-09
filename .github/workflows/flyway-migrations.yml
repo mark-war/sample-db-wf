@@ -107,6 +107,14 @@ jobs:
                               -user="$env:DB_USER" `
                               -password="$env:DB_PASSWORD" `
                               -locations="filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations" migrate
+          $exitCode = $LASTEXITCODE
+          echo "Flyway migration exit code: $exitCode"
+          if ($exitCode -ne 0) {
+            Write-Error "Flyway migration failed with exit code $exitCode"
+            exit $exitCode
+          } else {
+            echo "Flyway migration completed successfully."
+          }
         shell: powershell
         env:
           DB_URL: jdbc:sqlserver://192.168.4.37:1433;databaseName=ArgaamScreener_DEV;encrypt=false;trustServerCertificate=true;applicationName=Flyway

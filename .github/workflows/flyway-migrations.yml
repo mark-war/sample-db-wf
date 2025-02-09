@@ -59,38 +59,21 @@ jobs:
           echo "PATH=C:\opt\flyway\flyway-11.3.1;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           echo "Flyway setup complete."
 
-          Write-Output "Downloading SQL Server JDBC Driver..."
-          $maxRetries = 3
-          $attempt = 0
-          $downloadUrl = "https://download.microsoft.com/download/2/5/D/25D321F1-B7F2-4958-9024-3215C1BBD2A6/sqljdbc_12.4.0.0_enu.zip"
+          Write-Output "Downloading SQL Server JDBC Driver using curl..."
+          curl.exe -L -o sqljdbc.zip "https://go.microsoft.com/fwlink/?linkid=2136024"
 
-          while ($attempt -lt $maxRetries) {
-              Invoke-WebRequest -Uri $downloadUrl -OutFile "sqljdbc.zip"
-
-              # Check if the file is valid
-              if (Test-Path "sqljdbc.zip") {
-                  $fileSize = (Get-Item "sqljdbc.zip").length
-                  Write-Output "Downloaded file size: $fileSize bytes"
-
-                  if ($fileSize -gt 1024) {
-                      Write-Output "Download successful!"
-                      break
-                  }
+          if (Test-Path "sqljdbc.zip") {
+              $fileSize = (Get-Item "sqljdbc.zip").length
+              if ($fileSize -gt 1024) {
+                  Write-Output "Download successful!"
+              } else {
+                  Write-Output "Downloaded file is too small. Exiting..."
+                  exit 1
               }
-
-              Write-Output "Download failed. Retrying..."
-              $attempt++
-              Start-Sleep -Seconds 5
-          }
-
-          if ($fileSize -le 1024) {
-              Write-Output "All download attempts failed. Exiting..."
+          } else {
+              Write-Output "Download failed. Exiting..."
               exit 1
           }
-
-          Write-Output "Extracting SQL Server JDBC Driver..."
-          Expand-Archive -Path "sqljdbc.zip" -DestinationPath "C:\opt\flyway\drivers" -Force
-          Write-Output "SQL Server JDBC Driver installed."
 
       - name: Test Database Connection
         run: |

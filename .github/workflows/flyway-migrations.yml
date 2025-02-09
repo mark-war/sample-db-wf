@@ -13,24 +13,30 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # - name: Install Chocolatey in custom path
-      #   run: |
-      #     [Environment]::SetEnvironmentVariable('CHOCOLATEY_INSTALL', 'C:\Chocolatey', [System.EnvironmentVariableTarget]::User)
-      #     Set-ExecutionPolicy Bypass -Scope Process -Force;
-      #     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
-      #     iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-      #   shell: powershell
+      # Install Chocolatey if not installed
+      - name: Install Chocolatey
+        run: |
+          if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+              echo "Chocolatey not found. Installing Chocolatey..."
+              Set-ExecutionPolicy Bypass -Scope Process -Force;
+              [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+              iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+          } else {
+              echo "Chocolatey is already installed. Skipping installation."
+          }
+        shell: powershell
 
-      # - name: Install Chocolatey
-      #   run: |
-      #     Set-ExecutionPolicy Bypass -Scope Process -Force;
-      #     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
-      #     iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-      #   shell: powershell
-
-      # - name: Install Java
-      #   run: choco install openjdk11 --force
-      #   shell: powershell
+      # Install Java if not installed
+      - name: Install Java (OpenJDK 11)
+        run: |
+          $javaInstalled = Get-Command java -ErrorAction SilentlyContinue
+          if ($null -eq $javaInstalled) {
+              echo "Java not found. Installing OpenJDK 11..."
+              choco install openjdk11 --force
+          } else {
+              echo "Java is already installed. Skipping installation."
+          }
+        shell: powershell
 
       - name: Set up Flyway
         run: |
@@ -66,6 +72,6 @@ jobs:
                               -locations=filesystem:./migrations migrate
         shell: powershell
         env:
-          DB_URL: jdbc:sqlserver://192.168.4.37,1433\SQLEXPRESS;databaseName=yourDB;encrypt=false;
+          DB_URL: jdbc:sqlserver://192.168.4.37,1433\SQLEXPRESS;databaseName=ArgaamScreener_QA;encrypt=false;
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

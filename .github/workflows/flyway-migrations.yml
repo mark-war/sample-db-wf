@@ -101,16 +101,15 @@ jobs:
           echo "Running Flyway migration..."
 
           # Log the Flyway command to ensure it's formed correctly
-          $flywayCommand = "C:\opt\flyway\flyway-11.3.1\flyway -X -databaseType=sqlserver -url='$env:DB_URL' -user='$env:DB_USER' -password='$env:DB_PASSWORD' -locations='filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations' migrate"
-          echo "Running command: $flywayCommand"
+          $flywayCommand = "C:\opt\flyway\flyway-11.3.1\flyway"
+          $arguments = "-X -databaseType=sqlserver -url='$env:DB_URL' -user='$env:DB_USER' -password='$env:DB_PASSWORD' -locations='filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations' migrate"
 
-          # Run Flyway and capture output and errors
-          $output = & $flywayCommand 2>&1
+          echo "Running command: $flywayCommand $arguments"
 
-          echo "Flyway migration output: $output"
+          # Run Flyway using Start-Process for proper argument handling
+          $process = Start-Process -FilePath $flywayCommand -ArgumentList $arguments -PassThru -Wait
+          $exitCode = $process.ExitCode
 
-          # Capture exit code
-          $exitCode = $LASTEXITCODE
           echo "Flyway migration exit code: $exitCode"
 
           # Check if migration was successful

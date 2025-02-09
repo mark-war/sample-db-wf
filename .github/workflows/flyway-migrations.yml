@@ -38,6 +38,7 @@ jobs:
           }
         shell: powershell
 
+      # Set up Flyway
       - name: Set up Flyway
         shell: powershell
         run: |
@@ -75,10 +76,12 @@ jobs:
               exit 1
           }
 
+      # Test Database Connection
       - name: Test Database Connection
         run: |
           if ((Test-NetConnection -ComputerName 192.168.4.37 -Port 1433).TcpTestSucceeded) { echo "Port open" } else { echo "Cannot connect" }
 
+        # Create database if it doesn't exist
       - name: Create database if it doesn't exist
         run: |
           echo "Creating database if it doesn't exist..."
@@ -88,6 +91,14 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
+      # List migration files
+      - name: List migration files
+        run: |
+          echo "Listing migration files..."
+          dir "C:\Users\mark\Working Directory\sqlserver-db\migrations"
+        shell: powershell
+
+      # Run Flyway Migrations
       - name: Run Flyway Migrations
         run: |
           echo "Running Flyway migration..."
@@ -101,3 +112,20 @@ jobs:
           DB_URL: jdbc:sqlserver://192.168.4.37:1433;databaseName=ArgaamScreener_DEV;encrypt=false;trustServerCertificate=true;applicationName=Flyway
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      # Check migration results
+      - name: Check migration result
+        run: |
+          if ($LastExitCode -ne 0) {
+            Write-Error "Flyway migration failed with exit code $LastExitCode"
+            exit $LastExitCode
+          } else {
+            echo "Flyway migration completed successfully."
+          }
+        shell: powershell
+
+      # Display Flyway logs
+      - name: Display Flyway logs
+        run: |
+          Get-Content "C:\opt\flyway\flyway-11.3.1\logs\flyway.log" -Tail 20
+        shell: powershell

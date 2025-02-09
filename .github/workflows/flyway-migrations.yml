@@ -105,7 +105,7 @@ jobs:
           $arguments = "-X -databaseType=sqlserver -url='$env:DB_URL' -user='$env:DB_USER' -password='$env:DB_PASSWORD' -locations='filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations' migrate"
 
           # Ensure temp directory exists
-          $tempDir = "C:\Users\mark\temp"
+          $tempDir = "C:\temp"
           if (-not (Test-Path $tempDir)) {
             New-Item -Path $tempDir -ItemType Directory
           }

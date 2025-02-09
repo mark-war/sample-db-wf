@@ -1,3 +1,5 @@
+USE [ArgaamScreener_DEV];
+GO
 
 ALTER TABLE [dbo].[FieldConfigurations] ADD  DEFAULT ((0)) FOR [ShowPercentage]
 GO

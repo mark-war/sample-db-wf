@@ -1,3 +1,6 @@
+USE [ArgaamScreener_DEV];
+GO
+
 SET IDENTITY_INSERT [dbo].[FieldConfigurations] ON 
 
 INSERT [dbo].[FieldConfigurations] ([Id], [SetupId], [FieldId], [FieldNameEn], [FieldNameAr], [UnitNameEn], [UnitNameAr], [DisplaySeq], [IsActive], [Arguments], [SECTORID], [IndicatorID], [ShowPercentage], [NotesEn], [NotesAr]) VALUES (1, 5, 1, N'P/E', N'مكرر الربح', N'(TTM)', N'(آخر 12 شهرا)', 1, 1, N'id, filterid , marketid , fiscalperiodtypeid , noofcompanies, language', NULL, 1, NULL, NULL, NULL)

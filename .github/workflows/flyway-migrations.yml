@@ -75,12 +75,12 @@ jobs:
       - name: Run Flyway Migrations
         run: |
           echo "Running Flyway migration..."
-          C:\opt\flyway\flyway-11.3.1\flyway -url="$env:DB_URL" `
+          C:\opt\flyway\flyway-11.3.1\flyway -X -url="$env:DB_URL" `
                               -user="$env:DB_USER" `
                               -password="$env:DB_PASSWORD" `
                               -locations=filesystem:./migrations migrate
         shell: powershell
         env:
-          DB_URL: jdbc:sqlserver://192.168.4.37,1433\SQLEXPRESS;databaseName=master;encrypt=false;
+          DB_URL: jdbc:sqlserver://192.168.4.37,1433\SQLEXPRESS;databaseName=ArgaamScreener_DEV;encrypt=false;
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

@@ -102,13 +102,21 @@ jobs:
       - name: Run Flyway Migrations
         run: |
           echo "Running Flyway migration..."
-          C:\opt\flyway\flyway-11.3.1\flyway -X -databaseType=sqlserver `
-                              -url="$env:DB_URL" `
-                              -user="$env:DB_USER" `
-                              -password="$env:DB_PASSWORD" `
-                              -locations="filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations" migrate
+
+          # Capture both output and error
+          $output = & "C:\opt\flyway\flyway-11.3.1\flyway" -X -databaseType=sqlserver `
+               -url="$env:DB_URL" `
+               -user="$env:DB_USER" `
+               -password="$env:DB_PASSWORD" `
+               -locations="filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations" migrate
+
+          echo "Flyway migration output: $output"
+
+          # Capture exit code
           $exitCode = $LASTEXITCODE
           echo "Flyway migration exit code: $exitCode"
+
+          # Check if migration was successful
           if ($exitCode -ne 0) {
             Write-Error "Flyway migration failed with exit code $exitCode"
             exit $exitCode

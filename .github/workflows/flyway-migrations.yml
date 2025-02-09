@@ -78,7 +78,6 @@ jobs:
           C:\opt\flyway\flyway-11.3.1\flyway -X -url="$env:DB_URL" `
                               -user="$env:DB_USER" `
                               -password="$env:DB_PASSWORD" `
-                              # -locations=filesystem:./migrations migrate
                               -locations=filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations
         shell: powershell
         env:

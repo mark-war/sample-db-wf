@@ -59,10 +59,34 @@ jobs:
           echo "PATH=C:\opt\flyway\flyway-11.3.1;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
           echo "Flyway setup complete."
 
-          # Download SQL Server JDBC Driver
           Write-Output "Downloading SQL Server JDBC Driver..."
-          Invoke-WebRequest -Uri "https://aka.ms/download-jdbc-driver" -OutFile "sqljdbc.zip"
-          Write-Output "Download complete."
+          $maxRetries = 3
+          $attempt = 0
+          $downloadUrl = "https://download.microsoft.com/download/2/5/D/25D321F1-B7F2-4958-9024-3215C1BBD2A6/sqljdbc_12.4.0.0_enu.zip"
+
+          while ($attempt -lt $maxRetries) {
+              Invoke-WebRequest -Uri $downloadUrl -OutFile "sqljdbc.zip"
+
+              # Check if the file is valid
+              if (Test-Path "sqljdbc.zip") {
+                  $fileSize = (Get-Item "sqljdbc.zip").length
+                  Write-Output "Downloaded file size: $fileSize bytes"
+
+                  if ($fileSize -gt 1024) {
+                      Write-Output "Download successful!"
+                      break
+                  }
+              }
+
+              Write-Output "Download failed. Retrying..."
+              $attempt++
+              Start-Sleep -Seconds 5
+          }
+
+          if ($fileSize -le 1024) {
+              Write-Output "All download attempts failed. Exiting..."
+              exit 1
+          }
 
           Write-Output "Extracting SQL Server JDBC Driver..."
           Expand-Archive -Path "sqljdbc.zip" -DestinationPath "C:\opt\flyway\drivers" -Force

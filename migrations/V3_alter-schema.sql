@@ -7,3 +7,6 @@ GO
 ALTER TABLE [dbo].[SetupData]  WITH CHECK ADD FOREIGN KEY([WidgetId])
 REFERENCES [dbo].[Widgets] ([Id])
 GO
+
+ALTER DATABASE [ArgaamScreener_DEV] SET  READ_WRITE 
+GO

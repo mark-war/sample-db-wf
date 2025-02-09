@@ -1,243 +1,96 @@
-USE [master]
-CREATE DATABASE [ArgaamScreener_QA]
- CONTAINMENT = NONE
- WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+USE [master];
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET COMPATIBILITY_LEVEL = 150
+
+-- Step 1: Backup the existing database if it exists
+IF EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV')
+BEGIN
+    DECLARE @BackupPath NVARCHAR(500) = 'C:\Backup\ArgaamScreener_DEV_' + 
+                                        FORMAT(GETDATE(), 'yyyyMMdd_HHmmss') + '.bak';
+    
+    PRINT 'Backing up existing database...';
+    BACKUP DATABASE [ArgaamScreener_DEV] TO DISK = @BackupPath WITH FORMAT, INIT;
+    
+    PRINT 'Backup complete. Deleting existing database...';
+    ALTER DATABASE [ArgaamScreener_DEV] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE [ArgaamScreener_DEV];
+END;
+GO
+
+-- Step 2: Create the new database
+PRINT 'Creating new database...';
+CREATE DATABASE [ArgaamScreener_DEV]
+CONTAINMENT = NONE
+WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF;
+GO
+
+PRINT 'Database created successfully.';
+
+ALTER DATABASE [ArgaamScreener_DEV] SET COMPATIBILITY_LEVEL = 150
 GO
 IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
 begin
-EXEC [ArgaamScreener_QA].[dbo].[sp_fulltext_database] @action = 'enable'
+EXEC [ArgaamScreener_DEV].[dbo].[sp_fulltext_database] @action = 'enable'
 end
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET ANSI_NULL_DEFAULT OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET ANSI_NULL_DEFAULT OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET ANSI_NULLS OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET ANSI_NULLS OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET ANSI_PADDING OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET ANSI_PADDING OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET ANSI_WARNINGS OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET ANSI_WARNINGS OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET ARITHABORT OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET ARITHABORT OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET AUTO_CLOSE OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET AUTO_CLOSE OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET AUTO_SHRINK OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET AUTO_SHRINK OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET AUTO_UPDATE_STATISTICS ON 
+ALTER DATABASE [ArgaamScreener_DEV] SET AUTO_UPDATE_STATISTICS ON 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET CURSOR_CLOSE_ON_COMMIT OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET CURSOR_CLOSE_ON_COMMIT OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET CURSOR_DEFAULT  GLOBAL 
+ALTER DATABASE [ArgaamScreener_DEV] SET CURSOR_DEFAULT  GLOBAL 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET CONCAT_NULL_YIELDS_NULL OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET CONCAT_NULL_YIELDS_NULL OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET NUMERIC_ROUNDABORT OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET NUMERIC_ROUNDABORT OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET QUOTED_IDENTIFIER OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET QUOTED_IDENTIFIER OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET RECURSIVE_TRIGGERS OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET RECURSIVE_TRIGGERS OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET  DISABLE_BROKER 
+ALTER DATABASE [ArgaamScreener_DEV] SET  DISABLE_BROKER 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET DATE_CORRELATION_OPTIMIZATION OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET DATE_CORRELATION_OPTIMIZATION OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET TRUSTWORTHY OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET TRUSTWORTHY OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET ALLOW_SNAPSHOT_ISOLATION OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET PARAMETERIZATION SIMPLE 
+ALTER DATABASE [ArgaamScreener_DEV] SET PARAMETERIZATION SIMPLE 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET READ_COMMITTED_SNAPSHOT OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET READ_COMMITTED_SNAPSHOT OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET HONOR_BROKER_PRIORITY OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET HONOR_BROKER_PRIORITY OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET RECOVERY FULL 
+ALTER DATABASE [ArgaamScreener_DEV] SET RECOVERY FULL 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET  MULTI_USER 
+ALTER DATABASE [ArgaamScreener_DEV] SET  MULTI_USER 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET PAGE_VERIFY CHECKSUM  
+ALTER DATABASE [ArgaamScreener_DEV] SET PAGE_VERIFY CHECKSUM  
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET DB_CHAINING OFF 
+ALTER DATABASE [ArgaamScreener_DEV] SET DB_CHAINING OFF 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+ALTER DATABASE [ArgaamScreener_DEV] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+ALTER DATABASE [ArgaamScreener_DEV] SET TARGET_RECOVERY_TIME = 60 SECONDS 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET DELAYED_DURABILITY = DISABLED 
+ALTER DATABASE [ArgaamScreener_DEV] SET DELAYED_DURABILITY = DISABLED 
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+ALTER DATABASE [ArgaamScreener_DEV] SET ACCELERATED_DATABASE_RECOVERY = OFF  
 GO
-ALTER DATABASE [ArgaamScreener_QA] SET QUERY_STORE = OFF
-GO
-USE [ArgaamScreener_QA]
-GO
-/****** Object:  Table [dbo].[ChartTabs]    Script Date: 06/02/2025 4:11:39 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[ChartTabs](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[NameEn] [nvarchar](255) NOT NULL,
-	[NameAr] [nvarchar](255) NOT NULL,
-	[IsActive] [bit] NOT NULL,
-	[DisplaySeq] [int] NULL,
-	[IsSelected] [bit] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[FieldConfigurations]    Script Date: 06/02/2025 4:11:39 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[FieldConfigurations](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[SetupId] [int] NULL,
-	[FieldId] [int] NULL,
-	[FieldNameEn] [nvarchar](255) NOT NULL,
-	[FieldNameAr] [nvarchar](255) NOT NULL,
-	[UnitNameEn] [nvarchar](255) NULL,
-	[UnitNameAr] [nvarchar](255) NULL,
-	[DisplaySeq] [int] NULL,
-	[IsActive] [bit] NOT NULL,
-	[Arguments] [nvarchar](max) NULL,
-	[SECTORID] [int] NULL,
-	[IndicatorID] [int] NULL,
-	[ShowPercentage] [bit] NULL,
-	[NotesEn] [nvarchar](500) NULL,
-	[NotesAr] [nvarchar](500) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[FilterConfig]    Script Date: 06/02/2025 4:11:39 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[FilterConfig](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[ConfigJson] [nvarchar](max) NOT NULL,
-	[IsActive] [bit] NOT NULL,
-	[FieldConfigurationID] [int] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[FilterConfig25Sep2024]    Script Date: 06/02/2025 4:11:39 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[FilterConfig25Sep2024](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[ConfigJson] [nvarchar](max) NOT NULL,
-	[IsActive] [bit] NOT NULL,
-	[FieldConfigurationID] [int] NULL
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Filters]    Script Date: 06/02/2025 4:11:39 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Filters](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](255) NOT NULL,
-	[IsActive] [bit] NOT NULL,
-	[DisplaySeq] [int] NULL,
-	[IsSelected] [bit] NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[SetupData]    Script Date: 06/02/2025 4:11:39 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[SetupData](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](255) NOT NULL,
-	[DisplayNameEn] [nvarchar](255) NOT NULL,
-	[DisplayNameAr] [nvarchar](255) NOT NULL,
-	[WidgetId] [int] NULL,
-	[IsActive] [bit] NOT NULL,
-	[IsSelected] [bit] NULL,
-	[ParentId] [int] NULL,
-	[DisplaySeq] [decimal](18, 2) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Widgets]    Script Date: 06/02/2025 4:11:39 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Widgets](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[NameEn] [nvarchar](255) NOT NULL,
-	[NameAr] [nvarchar](255) NOT NULL,
-	[IsActive] [bit] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
-/****** Object:  StoredProcedure [dbo].[GetFieldsConfigurations]    Script Date: 06/02/2025 4:11:40 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE   PROCEDURE [dbo].[GetFieldsConfigurations] 
-AS
-BEGIN
-    SELECT 
-	    FC.Id AS Pkey,
-        SetupId AS TabID,
-        FieldNameEn, 
-        FieldNameAr, 
-        UnitNameEn, 
-        UnitNameAr, 
-        ConfigJson,
-		Arguments as Args,
-		SECTORID AS SectorID,
-		IndicatorID,
-		CASE WHEN ShowPercentage = 1 THEN 1 ELSE 0 END AS ShowPercentage,
-	    NotesEn , 
-		NotesAr
-    FROM 
-        FieldConfigurations FC
-    INNER JOIN 
-        FilterConfig FCC ON FC.Id = FCC.FieldConfigurationID 
-    WHERE 
-        FC.IsActive = 1
-    ORDER BY 
-        SetupId, 
-		SECTORID,
-        DisplaySeq;
-END;
-GO
-USE [master]
-GO
-ALTER DATABASE [ArgaamScreener_QA] SET  READ_WRITE 
+ALTER DATABASE [ArgaamScreener_DEV] SET QUERY_STORE = OFF
 GO

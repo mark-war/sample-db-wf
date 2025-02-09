@@ -76,20 +76,20 @@ jobs:
               exit 1
           }
 
-      # # Test Database Connection
-      # - name: Test Database Connection
-      #   run: |
-      #     if ((Test-NetConnection -ComputerName 192.168.4.37 -Port 1433).TcpTestSucceeded) { echo "Port open" } else { echo "Cannot connect" }
+      # Test Database Connection
+      - name: Test Database Connection
+        run: |
+          if ((Test-NetConnection -ComputerName 192.168.4.37 -Port 1433).TcpTestSucceeded) { echo "Port open" } else { echo "Cannot connect" }
 
-      #   # Create database if it doesn't exist
-      # - name: Create database if it doesn't exist
-      #   run: |
-      #     echo "Creating database if it doesn't exist..."
-      #     sqlcmd -S 192.168.4.37,1433 -U $Env:DB_USER -P $Env:DB_PASSWORD -d master -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') CREATE DATABASE ArgaamScreener_DEV;"
-      #   shell: powershell
-      #   env:
-      #     DB_USER: ${{ secrets.DB_USER }}
-      #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        # Create database if it doesn't exist
+      - name: Create database if it doesn't exist
+        run: |
+          echo "Creating database if it doesn't exist..."
+          sqlcmd -S 192.168.4.37,1433 -U $Env:DB_USER -P $Env:DB_PASSWORD -d master -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') CREATE DATABASE ArgaamScreener_DEV;"
+        shell: powershell
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       # Run Flyway Migrations
       - name: Run Flyway Migrations

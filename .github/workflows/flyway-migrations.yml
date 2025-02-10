@@ -121,8 +121,10 @@ jobs:
       - name: Run Flyway Repair
         run: |
           echo "Running Flyway repair..."
-          # C:\opt\flyway\flyway-11.3.1\flyway.cmd repair
-          C:\opt\flyway\flyway-11.3.1\flyway.cmd repair -url="${{ env.DB_URL }}" -user="${{ secrets.DB_USER }}" -password="${{ secrets.DB_PASSWORD }}"
+          $env:DB_URL = "${{ secrets.DB_URL }}"
+          $env:DB_USER = "${{ secrets.DB_USER }}"
+          $env:DB_PASSWORD = "${{ secrets.DB_PASSWORD }}"
+          C:\opt\flyway\flyway-11.3.1\flyway.cmd repair -url=$env:DB_URL -user=$env:DB_USER -password=$env:DB_PASSWORD
           echo "Flyway repair completed."
         shell: powershell
         env:

@@ -147,8 +147,7 @@ jobs:
           $flywayCommand = "C:\opt\flyway\flyway-11.3.1\flyway.cmd"
 
           # Quote paths properly and escape them
-          # $arguments = "-X -databaseType=sqlserver -url=`"$env:DB_URL`" -user=`"$env:DB_USER`" -password=`"$env:DB_PASSWORD`" -locations=`"filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations`" migrate"
-          $arguments = "-X -url=`"$env:DB_URL`" -user=`"$env:DB_USER`" -password=`"$env:DB_PASSWORD`" -locations=`"filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations`" migrate"
+          $arguments = "-X -url=`"$env:DB_URL`" -user=`"$env:DB_USER`" -password=`"$env:DB_PASSWORD`" -driver=`"com.microsoft.sqlserver.jdbc.SQLServerDriver`" -locations=`"filesystem:C:\Users\mark\Working Directory\sqlserver-db\migrations`" migrate"
 
           # Log the constructed Flyway command to ensure it's formed correctly
           echo "Running command: $flywayCommand $arguments"

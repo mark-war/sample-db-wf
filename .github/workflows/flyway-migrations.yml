@@ -117,6 +117,18 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
+      # Run Flyway Repai
+      - name: Run Flyway Repair
+        run: |
+          echo "Running Flyway repair..."
+          C:\opt\flyway\flyway-11.3.1\flyway.cmd repair
+          echo "Flyway repair completed."
+        shell: powershell
+        env:
+          DB_URL: jdbc:sqlserver://192.168.4.37:1433;databaseName=ArgaamScreener_DEV;encrypt=false;trustServerCertificate=true;applicationName=Flyway
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
       # Run Flyway Migrations
       - name: Run Flyway Migrations
         run: |

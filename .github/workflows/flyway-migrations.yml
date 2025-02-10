@@ -81,11 +81,37 @@ jobs:
         run: |
           if ((Test-NetConnection -ComputerName 192.168.4.37 -Port 1433).TcpTestSucceeded) { echo "Port open" } else { echo "Cannot connect" }
 
-        # Create database if it doesn't exist
-      - name: Create database if it doesn't exist
+      #   # Create database if it doesn't exist
+      # - name: Create database if it doesn't exist
+      #   run: |
+      #     echo "Creating database if it doesn't exist..."
+      #     sqlcmd -S 192.168.4.37,1433 -U $Env:DB_USER -P $Env:DB_PASSWORD -d master -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') CREATE DATABASE ArgaamScreener_DEV;"
+      #   shell: powershell
+      #   env:
+      #     DB_USER: ${{ secrets.DB_USER }}
+      #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      # Backup Database before Migration
+      - name: Backup Database
         run: |
-          echo "Creating database if it doesn't exist..."
-          sqlcmd -S 192.168.4.37,1433 -U $Env:DB_USER -P $Env:DB_PASSWORD -d master -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') CREATE DATABASE ArgaamScreener_DEV;"
+          echo "Backing up database before migration..."
+          $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+          $backupFile = "C:\backups\ArgaamScreener_DEV_$timestamp.bak"
+
+          # Ensure backup directory exists
+          if (-not (Test-Path "C:\backups")) {
+            New-Item -Path "C:\backups" -ItemType Directory
+          }
+
+          # Run SQLCMD to back up the database
+          sqlcmd -S 192.168.4.37,1433 -U $Env:DB_USER -P $Env:DB_PASSWORD -Q "BACKUP DATABASE [ArgaamScreener_DEV] TO DISK = '$backupFile' WITH FORMAT, INIT, NAME = 'ArgaamScreener_DEV-Full Database Backup';"
+
+          if (Test-Path $backupFile) {
+            echo "Backup successful: $backupFile"
+          } else {
+            echo "Database backup failed!"
+            exit 1
+          }
         shell: powershell
         env:
           DB_USER: ${{ secrets.DB_USER }}

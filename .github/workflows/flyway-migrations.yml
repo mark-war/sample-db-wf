@@ -148,11 +148,15 @@ jobs:
             exit 1
           }
 
+          if (-not $env:DB_URL) { Write-Error "DB_URL is not set!" }
+          if (-not $env:DB_USER) { Write-Error "DB_USER is not set!" }
+          if (-not $env:DB_PASSWORD) { Write-Error "DB_PASSWORD is not set!" }
+
           # Define Flyway executable path and arguments
           $flywayCommand = "C:\opt\flyway\flyway-11.3.1\flyway.cmd"
 
           # Quote paths properly and escape them
-          $arguments = "-X -url=`"$env:DB_URL`" -user=`"$env:DB_USER`" -password=`"$env:DB_PASSWORD`" -driver=`"com.microsoft.sqlserver.jdbc.SQLServerDriver`" -locations=`"filesystem:`"C:\Users\mark\sqlserver-db\migrations`"`" migrate"
+          $arguments = "-X -url=`"$env:DB_URL`" -user=`"$env:DB_USER`" -password=`"$env:DB_PASSWORD`" -driver=`"com.microsoft.sqlserver.jdbc.SQLServerDriver`" -locations=`"filesystem:C:\Users\mark\sqlserver-db\migrations`" migrate"
 
           # Log the constructed Flyway command to ensure it's formed correctly
           echo "Running command: $flywayCommand $arguments"

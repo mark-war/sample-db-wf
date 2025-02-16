@@ -2,13 +2,17 @@ USE [master];
 GO
 
 -- Step 1: Create the new database
-PRINT 'Creating new database...';
-CREATE DATABASE [ArgaamScreener_DEV]
-CONTAINMENT = NONE
-WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF;
-GO
-
-PRINT 'Database created successfully.';
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV')
+BEGIN
+    PRINT 'Creating new database...';
+    CREATE DATABASE [ArgaamScreener_DEV] CONTAINMENT = NONE 
+    WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF;
+    PRINT 'Database created successfully.';
+END
+ELSE
+BEGIN
+    PRINT 'Database already exists.';
+END
 
 ALTER DATABASE [ArgaamScreener_DEV] SET COMPATIBILITY_LEVEL = 150
 GO

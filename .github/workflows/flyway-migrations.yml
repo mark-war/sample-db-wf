@@ -120,9 +120,12 @@ jobs:
         run: |
           echo "Checking if database exists..."
 
-          # Check if the database exists
-          $dbExists = Invoke-Sqlcmd -ServerInstance "192.168.4.37,1433" -Query "SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV';" -ErrorAction SilentlyContinue
-          if ($dbExists) {
+          # Check if the database exists using sqlcmd
+          sqlcmd -S 192.168.4.37,1433 -U $env:DB_USER -P $env:DB_PASSWORD -Q "IF EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') SELECT 'Database exists' ELSE SELECT 'Database does not exist'" -o result.txt
+
+          # Check the result
+          $dbExists = Get-Content result.txt
+          if ($dbExists -contains "Database exists") {
               echo "Database exists. Running Flyway repair..."
               echo "DB_URL: $env:DB_URL"
               echo "DB_USER: $env:DB_USER"

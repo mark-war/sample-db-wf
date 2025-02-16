@@ -1,6 +1,38 @@
 USE [ArgaamScreener_DEV];
 GO
 
+SET IDENTITY_INSERT [dbo].[Widgets] ON 
+
+INSERT [dbo].[Widgets] ([Id], [NameEn], [NameAr], [IsActive]) VALUES (1, N'Page', N'صفحة', 1)
+INSERT [dbo].[Widgets] ([Id], [NameEn], [NameAr], [IsActive]) VALUES (2, N'Sections', N'أقسام', 1)
+INSERT [dbo].[Widgets] ([Id], [NameEn], [NameAr], [IsActive]) VALUES (3, N'Tab', N'تبويب', 1)
+SET IDENTITY_INSERT [dbo].[Widgets] OFF
+GO
+
+SET IDENTITY_INSERT [dbo].[Filters] ON 
+
+INSERT [dbo].[Filters] ([Id], [Name], [IsActive], [DisplaySeq], [IsSelected]) VALUES (1, N'Ranking', 1, 1, 1)
+INSERT [dbo].[Filters] ([Id], [Name], [IsActive], [DisplaySeq], [IsSelected]) VALUES (2, N'Historical', 1, 1, 1)
+SET IDENTITY_INSERT [dbo].[Filters] OFF
+GO
+SET IDENTITY_INSERT [dbo].[SetupData] ON 
+
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (1, N'Screener', N'Screener', N'تحليل الأسهم', 1, 1, 1, 0, CAST(1.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (2, N'Top 10', N'Top 10', N'أعلى 10', 1, 1, 0, 0, CAST(2.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (3, N'Stock Screener', N'Stock Screener', N'تحليل الأسهم', 2, 1, 1, 1, CAST(1.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (4, N'Top 10 Companies', N'Top 10 Companies', N'أعلى 10 شركات', 2, 1, 1, 2, CAST(1.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (5, N'Multiples', N'Multiples', N'المكررات', 3, 1, 0, 3, CAST(2.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (6, N'Financial Ratios', N'Financial Ratios', N'المؤشرات المالية', 3, 1, 0, 3, CAST(3.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (7, N'Size And Ranking', N'Size And Ranking', N'الحجم و الترتيب', 3, 1, 1, 3, CAST(1.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (8, N'Ranking', N'Ranking', N'الترتيب', 3, 1, 1, 4, CAST(1.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (9, N'Stock Performance', N'Stock Performance', N'أداء الأسهم', 3, 1, 0, 4, CAST(2.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (10, N'Multiples', N'Multiples', N'المكررات', 3, 1, 0, 4, CAST(3.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (11, N'Financial Ratios', N'Financial Ratios', N'المؤشرات المالية', 3, 1, 0, 4, CAST(4.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (12, N'Growth And Dividends', N'Growth And Dividends', N'النمو والتوزيعات', 3, 1, 0, 4, CAST(5.00 AS Decimal(18, 2)))
+INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (13, N'Growth', N'Growth', N'النمو', 3, 1, 0, 3, CAST(1.10 AS Decimal(18, 2)))
+SET IDENTITY_INSERT [dbo].[SetupData] OFF
+GO
+
 SET IDENTITY_INSERT [dbo].[FieldConfigurations] ON 
 
 INSERT [dbo].[FieldConfigurations] ([Id], [SetupId], [FieldId], [FieldNameEn], [FieldNameAr], [UnitNameEn], [UnitNameAr], [DisplaySeq], [IsActive], [Arguments], [SECTORID], [IndicatorID], [ShowPercentage], [NotesEn], [NotesAr]) VALUES (1, 5, 1, N'P/E', N'مكرر الربح', N'(TTM)', N'(آخر 12 شهرا)', 1, 1, N'id, filterid , marketid , fiscalperiodtypeid , noofcompanies, language', NULL, 1, NULL, NULL, NULL)
@@ -325,34 +357,4 @@ INSERT [dbo].[FilterConfig25Sep2024] ([Id], [ConfigJson], [IsActive], [FieldConf
 INSERT [dbo].[FilterConfig25Sep2024] ([Id], [ConfigJson], [IsActive], [FieldConfigurationID]) VALUES (65, N'{"configuration":[{"fid":"1","cid":"56","config":[{"ftid":"3"}],"noc":"-1"}]}', 1, 65)
 INSERT [dbo].[FilterConfig25Sep2024] ([Id], [ConfigJson], [IsActive], [FieldConfigurationID]) VALUES (66, N'{"configuration":[{"fid":"1","cid":"57","config":[{"ftid":"3"}],"noc":"-1"}]}', 1, 66)
 SET IDENTITY_INSERT [dbo].[FilterConfig25Sep2024] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Filters] ON 
-
-INSERT [dbo].[Filters] ([Id], [Name], [IsActive], [DisplaySeq], [IsSelected]) VALUES (1, N'Ranking', 1, 1, 1)
-INSERT [dbo].[Filters] ([Id], [Name], [IsActive], [DisplaySeq], [IsSelected]) VALUES (2, N'Historical', 1, 1, 1)
-SET IDENTITY_INSERT [dbo].[Filters] OFF
-GO
-SET IDENTITY_INSERT [dbo].[SetupData] ON 
-
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (1, N'Screener', N'Screener', N'تحليل الأسهم', 1, 1, 1, 0, CAST(1.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (2, N'Top 10', N'Top 10', N'أعلى 10', 1, 1, 0, 0, CAST(2.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (3, N'Stock Screener', N'Stock Screener', N'تحليل الأسهم', 2, 1, 1, 1, CAST(1.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (4, N'Top 10 Companies', N'Top 10 Companies', N'أعلى 10 شركات', 2, 1, 1, 2, CAST(1.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (5, N'Multiples', N'Multiples', N'المكررات', 3, 1, 0, 3, CAST(2.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (6, N'Financial Ratios', N'Financial Ratios', N'المؤشرات المالية', 3, 1, 0, 3, CAST(3.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (7, N'Size And Ranking', N'Size And Ranking', N'الحجم و الترتيب', 3, 1, 1, 3, CAST(1.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (8, N'Ranking', N'Ranking', N'الترتيب', 3, 1, 1, 4, CAST(1.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (9, N'Stock Performance', N'Stock Performance', N'أداء الأسهم', 3, 1, 0, 4, CAST(2.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (10, N'Multiples', N'Multiples', N'المكررات', 3, 1, 0, 4, CAST(3.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (11, N'Financial Ratios', N'Financial Ratios', N'المؤشرات المالية', 3, 1, 0, 4, CAST(4.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (12, N'Growth And Dividends', N'Growth And Dividends', N'النمو والتوزيعات', 3, 1, 0, 4, CAST(5.00 AS Decimal(18, 2)))
-INSERT [dbo].[SetupData] ([Id], [Name], [DisplayNameEn], [DisplayNameAr], [WidgetId], [IsActive], [IsSelected], [ParentId], [DisplaySeq]) VALUES (13, N'Growth', N'Growth', N'النمو', 3, 1, 0, 3, CAST(1.10 AS Decimal(18, 2)))
-SET IDENTITY_INSERT [dbo].[SetupData] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Widgets] ON 
-
-INSERT [dbo].[Widgets] ([Id], [NameEn], [NameAr], [IsActive]) VALUES (1, N'Page', N'صفحة', 1)
-INSERT [dbo].[Widgets] ([Id], [NameEn], [NameAr], [IsActive]) VALUES (2, N'Sections', N'أقسام', 1)
-INSERT [dbo].[Widgets] ([Id], [NameEn], [NameAr], [IsActive]) VALUES (3, N'Tab', N'تبويب', 1)
-SET IDENTITY_INSERT [dbo].[Widgets] OFF
 GO

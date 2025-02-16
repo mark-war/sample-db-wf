@@ -148,9 +148,9 @@ jobs:
             exit 1
           }
 
-          if (-not $env:DB_URL) { Write-Error "DB_URL is not set!" }
-          if (-not $env:DB_USER) { Write-Error "DB_USER is not set!" }
-          if (-not $env:DB_PASSWORD) { Write-Error "DB_PASSWORD is not set!" }
+          if (-not $env:DB_URL -or $env:DB_URL -eq "") { Write-Error "DB_URL is not set!" ; exit 1 }
+          if (-not $env:DB_USER -or $env:DB_USER -eq "") { Write-Error "DB_USER is not set!" ; exit 1 }
+          if (-not $env:DB_PASSWORD -or $env:DB_PASSWORD -eq "") { Write-Error "DB_PASSWORD is not set!" ; exit 1 }
 
           # Define Flyway executable path and arguments
           $flywayCommand = "C:\opt\flyway\flyway-11.3.1\flyway.cmd"

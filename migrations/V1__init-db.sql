@@ -1,39 +1,45 @@
 USE [master];
 GO
 
--- Step 1: Backup the existing database if it exists
+-- Step 1: Backup & Drop Database if Exists
 IF EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV')
 BEGIN
     PRINT 'Deleting existing database...';
 
-    -- Kill all active connections to the database
+    -- Kill all active sessions
     DECLARE @kill varchar(8000) = '';  
     SELECT @kill = @kill + 'KILL ' + CAST(session_id AS varchar) + '; '  
     FROM sys.dm_exec_sessions  
     WHERE database_id = DB_ID('ArgaamScreener_DEV');  
-    EXEC(@kill);  
 
-    ALTER DATABASE [ArgaamScreener_DEV] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    DROP DATABASE [ArgaamScreener_DEV];
-    PRINT 'Database deleted.';
+    IF @kill <> ''  
+        EXEC(@kill);  
+
+    -- Drop database safely
+    BEGIN TRY
+        ALTER DATABASE [ArgaamScreener_DEV] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+        DROP DATABASE [ArgaamScreener_DEV];
+        PRINT 'Database deleted.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error dropping database: ' + ERROR_MESSAGE();
+    END CATCH;
 END;
 GO
 
-
--- Step 2: Create the new database
-IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV')
-BEGIN
+-- Step 2: Create the Database
+BEGIN TRY
     PRINT 'Creating new database...';
     CREATE DATABASE [ArgaamScreener_DEV] CONTAINMENT = NONE 
     WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF;
     PRINT 'Database created successfully.';
-END
-ELSE
-BEGIN
-    PRINT 'Database already exists.';
-END
+END TRY
+BEGIN CATCH
+    PRINT 'Error creating database: ' + ERROR_MESSAGE();
+END CATCH;
+GO
 
--- Step 2: Alter the database settings (Remove the BEGIN TRANSACTION and COMMIT)
+-- Step 3: Configure Database Settings
 ALTER DATABASE [ArgaamScreener_DEV] SET COMPATIBILITY_LEVEL = 150;
 GO
 IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))

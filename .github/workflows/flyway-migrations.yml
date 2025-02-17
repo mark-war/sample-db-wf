@@ -169,8 +169,19 @@ jobs:
           # Define Flyway executable path and arguments
           $flywayCommand = "C:\opt\flyway\flyway-11.3.1\flyway.cmd"
 
-          # Quote paths properly and escape them
-          $arguments = "-X -url=`"$env:DB_URL`" -user=`"$env:DB_USER`" -password=`"$env:DB_PASSWORD`" -driver=`"com.microsoft.sqlserver.jdbc.SQLServerDriver`" -locations=`"filesystem:C:\Users\mark\sqlserver-db\migrations`" -mixed=true -baselineOnMigrate=true migrate"
+          # Baseline the database (only if it's a fresh setup or the baseline hasn't been applied yet)
+          $baselineArguments = "-X -url=`"$env:DB_URL`" -user=`"$env:DB_USER`" -password=`"$env:DB_PASSWORD`" -driver=`"com.microsoft.sqlserver.jdbc.SQLServerDriver`" -locations=`"filesystem:C:\Users\mark\sqlserver-db\migrations`" baseline"
+
+          # Run the baseline command
+          echo "Running baseline command: $flywayCommand $baselineArguments"
+          Start-Process -FilePath $flywayCommand -ArgumentList $baselineArguments -PassThru -Wait
+
+          # Now run the migrations
+          $migrateArguments = "-X -url=`"$env:DB_URL`" -user=`"$env:DB_USER`" -password=`"$env:DB_PASSWORD`" -driver=`"com.microsoft.sqlserver.jdbc.SQLServerDriver`" -locations=`"filesystem:C:\Users\mark\sqlserver-db\migrations`" -mixed=true migrate"
+
+          # Run the migration command
+          echo "Running migration command: $flywayCommand $migrateArguments"
+          Start-Process -FilePath $flywayCommand -ArgumentList $migrateArguments -PassThru -Wait
 
           # Log the constructed Flyway command to ensure it's formed correctly
           echo "Running command: $flywayCommand $arguments"

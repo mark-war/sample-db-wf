@@ -194,7 +194,7 @@ jobs:
 
           # Capture detailed output from Flyway migration
           try {
-            $process = Start-Process -FilePath $flywayCommand -ArgumentList $arguments -PassThru -Wait -RedirectStandardOutput "C:\temp\flyway-output.log" -RedirectStandardError "C:\temp\flyway-error.log"
+            $process = Start-Process -FilePath $flywayCommand -ArgumentList $migrateArguments -PassThru -Wait -RedirectStandardOutput "C:\temp\flyway-output.log" -RedirectStandardError "C:\temp\flyway-error.log"
             $exitCode = $process.ExitCode
 
             # Log Flyway output and error

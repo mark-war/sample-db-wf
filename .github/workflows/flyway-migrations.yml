@@ -184,7 +184,7 @@ jobs:
           Start-Process -FilePath $flywayCommand -ArgumentList $migrateArguments -PassThru -Wait
 
           # Log the constructed Flyway command to ensure it's formed correctly
-          echo "Running command: $flywayCommand $arguments"
+          echo "Running command: $flywayCommand $migrateArguments"
 
           # Ensure temp directory exists
           $tempDir = "C:\temp"

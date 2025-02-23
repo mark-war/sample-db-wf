@@ -135,33 +135,33 @@ jobs:
       #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       # Run Flyway Repair
-      - name: Run Flyway Repair
-        run: |
-          echo "Checking if database exists..."
+      # - name: Run Flyway Repair
+      #   run: |
+      #     echo "Checking if database exists..."
 
-          # Check if the database exists using sqlcmd
-          sqlcmd -S 192.168.4.37,1433 -U $env:DB_USER -P $env:DB_PASSWORD -Q "IF EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') SELECT 'Database exists' ELSE SELECT 'Database does not exist'" -o result.txt
+      #     # Check if the database exists using sqlcmd
+      #     sqlcmd -S 192.168.4.37,1433 -U $env:DB_USER -P $env:DB_PASSWORD -Q "IF EXISTS (SELECT name FROM sys.databases WHERE name = 'ArgaamScreener_DEV') SELECT 'Database exists' ELSE SELECT 'Database does not exist'" -o result.txt
 
-          # Check the result
-          $dbExists = Get-Content result.txt
-          if ($dbExists -contains "Database exists") {
-              echo "Database exists. Running Flyway repair..."
-              echo "DB_URL: $env:DB_URL"
-              echo "DB_USER: $env:DB_USER"
-              echo "DB_PASSWORD: $env:DB_PASSWORD"
-              
-              # Run Flyway repair
-              C:\opt\flyway\flyway-11.3.1\flyway.cmd repair -url="$env:DB_URL" -user="$env:DB_USER" -password="$env:DB_PASSWORD"
-              echo "Flyway repair completed."
-          } else {
-              echo "Database does not exist. Skipping Flyway repair."
-          }
-        shell: powershell
-        env:
-          PATH: "C:\\opt\\flyway\\flyway-11.3.1;C:\\Program Files\\Eclipse Adoptium\\jdk-11.0.25.9-hotspot\\bin;C:\\Program Files\\Microsoft MPI\\Bin\\;C:\\Python313\\Scripts\\;C:\\Python313\\;C:\\Python312\\Scripts\\C:\\Python312\\;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\ProgramData\\chocolatey\\bin;C:\\Program Files (x86)\\Microsoft SQL Server\\160\\DTS\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Program Files\\nodejs\\;C:\\Program Files\\Git\\cmd;C:\\Program Files (x86)\\Microsoft SQL Server\\160\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\160\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\160\\DTS\\Binn\\;C:\\PROGRA~1\\Red Gate\\Flyway Desktop\\;C:\\WINDOWS\\ServiceProfiles\\NetworkService\\AppData\\Local\\Microsoft\\WindowsApps"
-          DB_URL: "jdbc:sqlserver://192.168.4.37:1433;databaseName=ArgaamScreener_DEV;encrypt=false;trustServerCertificate=true;applicationName=Flyway"
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      #     # Check the result
+      #     $dbExists = Get-Content result.txt
+      #     if ($dbExists -contains "Database exists") {
+      #         echo "Database exists. Running Flyway repair..."
+      #         echo "DB_URL: $env:DB_URL"
+      #         echo "DB_USER: $env:DB_USER"
+      #         echo "DB_PASSWORD: $env:DB_PASSWORD"
+
+      #         # Run Flyway repair
+      #         C:\opt\flyway\flyway-11.3.1\flyway.cmd repair -url="$env:DB_URL" -user="$env:DB_USER" -password="$env:DB_PASSWORD"
+      #         echo "Flyway repair completed."
+      #     } else {
+      #         echo "Database does not exist. Skipping Flyway repair."
+      #     }
+      #   shell: powershell
+      #   env:
+      #     PATH: "C:\\opt\\flyway\\flyway-11.3.1;C:\\Program Files\\Eclipse Adoptium\\jdk-11.0.25.9-hotspot\\bin;C:\\Program Files\\Microsoft MPI\\Bin\\;C:\\Python313\\Scripts\\;C:\\Python313\\;C:\\Python312\\Scripts\\C:\\Python312\\;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\ProgramData\\chocolatey\\bin;C:\\Program Files (x86)\\Microsoft SQL Server\\160\\DTS\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files\\dotnet\\;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Program Files\\nodejs\\;C:\\Program Files\\Git\\cmd;C:\\Program Files (x86)\\Microsoft SQL Server\\160\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\160\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\160\\DTS\\Binn\\;C:\\PROGRA~1\\Red Gate\\Flyway Desktop\\;C:\\WINDOWS\\ServiceProfiles\\NetworkService\\AppData\\Local\\Microsoft\\WindowsApps"
+      #     DB_URL: "jdbc:sqlserver://192.168.4.37:1433;databaseName=ArgaamScreener_DEV;encrypt=false;trustServerCertificate=true;applicationName=Flyway"
+      #     DB_USER: ${{ secrets.DB_USER }}
+      #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       # Run Flyway Migrations
       - name: Run Flyway Migrations

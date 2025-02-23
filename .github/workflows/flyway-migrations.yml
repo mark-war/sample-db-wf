@@ -77,30 +77,30 @@ jobs:
           }
 
       # Test Database Connection
-      - name: Test Database Connection
-        run: |
-          if ((Test-NetConnection -ComputerName 192.168.4.37 -Port 1433).TcpTestSucceeded) { echo "Port open" } else { echo "Cannot connect" }
+      # - name: Test Database Connection
+      #   run: |
+      #     if ((Test-NetConnection -ComputerName 192.168.4.37 -Port 1433).TcpTestSucceeded) { echo "Port open" } else { echo "Cannot connect" }
 
-      - name: Verify sqlcmd Installation
-        run: |
-          if (-not (Get-Command sqlcmd -ErrorAction SilentlyContinue)) {
-            Write-Host "sqlcmd is not installed."
-            exit 1
-          } else {
-            Write-Host "sqlcmd is installed."
-          }
-        shell: powershell
+      # - name: Verify sqlcmd Installation
+      #   run: |
+      #     if (-not (Get-Command sqlcmd -ErrorAction SilentlyContinue)) {
+      #       Write-Host "sqlcmd is not installed."
+      #       exit 1
+      #     } else {
+      #       Write-Host "sqlcmd is installed."
+      #     }
+      #   shell: powershell
 
-      - name: Use Full Path for sqlcmd
-        run: |
-          $dbExists = & "C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\sqlcmd.exe" -S 192.168.4.37,1433 -U $Env:DB_USER -P $Env:DB_PASSWORD -Q "SELECT 1"
-        shell: powershell
+      # - name: Use Full Path for sqlcmd
+      #   run: |
+      #     $dbExists = & "C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\sqlcmd.exe" -S 192.168.4.37,1433 -U $Env:DB_USER -P $Env:DB_PASSWORD -Q "SELECT 1"
+      #   shell: powershell
 
-      - name: Find SQLCMD Path
-        run: Get-Command sqlcmd | Select-Object -ExpandProperty Source
-        shell: powershell
+      # - name: Find SQLCMD Path
+      #   run: Get-Command sqlcmd | Select-Object -ExpandProperty Source
+      #   shell: powershell
 
-      - name: Backup Database
+      # - name: Backup Database
         run: |
           echo "Checking if the database exists before backup..."
 

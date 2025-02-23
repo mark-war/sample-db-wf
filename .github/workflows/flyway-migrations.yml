@@ -250,7 +250,7 @@ jobs:
       #   shell: powershell
 
       # Display Flyway logs
-      - name: Display Flyway logs
-        run: |
-          Get-Content "C:\opt\flyway\flyway-11.3.1\logs\flyway.log" -Tail 20
-        shell: powershell
+      # - name: Display Flyway logs
+      #   run: |
+      #     Get-Content "C:\opt\flyway\flyway-11.3.1\logs\flyway.log" -Tail 20
+      #   shell: powershell

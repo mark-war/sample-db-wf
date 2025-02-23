@@ -91,6 +91,15 @@ jobs:
           }
         shell: powershell
 
+      - name: Use Full Path for sqlcmd
+        run: |
+          $dbExists = & "C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\sqlcmd.exe" -S "192.168.4.37,1433" -U "$Env:DB_USER" -P "$Env:DB_PASSWORD" -Q "SELECT 1"
+        shell: powershell
+
+      - name: Find SQLCMD Path
+        run: Get-Command sqlcmd | Select-Object -ExpandProperty Source
+        shell: powershell
+
       - name: Backup Database
         run: |
           echo "Checking if the database exists before backup..."

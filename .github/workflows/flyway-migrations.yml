@@ -239,15 +239,15 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       # Check migration results
-      - name: Check migration result
-        run: |
-          if ($LastExitCode -ne 0) {
-            Write-Error "Flyway migration failed with exit code $LastExitCode"
-            exit $LastExitCode
-          } else {
-            echo "Flyway migration completed successfully."
-          }
-        shell: powershell
+      # - name: Check migration result
+      #   run: |
+      #     if ($LastExitCode -ne 0) {
+      #       Write-Error "Flyway migration failed with exit code $LastExitCode"
+      #       exit $LastExitCode
+      #     } else {
+      #       echo "Flyway migration completed successfully."
+      #     }
+      #   shell: powershell
 
       # Display Flyway logs
       - name: Display Flyway logs

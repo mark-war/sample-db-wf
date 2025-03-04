@@ -18,23 +18,6 @@ jobs:
           echo "Using Flyway path: $flywayPath"
           echo "FLYWAY_HOME=$flywayPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
-      - name: Install sqlcmd (SQL Server Command Line Tools)
-        run: |
-          # Install SQL Server Command Line Tools using the official script
-          Write-Host "Installing SQL Server Command Line Tools using Microsoft install script..."
-
-          # Download the install script
-          Invoke-WebRequest -Uri https://aka.ms/sqlcmdlinetools -OutFile sqlcmd-install.ps1
-
-          # Run the install script
-          .\sqlcmd-install.ps1
-
-          # Add the extracted tools to the system PATH
-          $destinationPath = "C:\opt\sqlcmd"
-          [System.Environment]::SetEnvironmentVariable('PATH', "$env:PATH;$destinationPath", [System.EnvironmentVariableTarget]::Machine)
-
-          Write-Host "SQL Server Command Line Tools installed successfully."
-
       - name: Check Current Flyway Version
         run: |
           echo "Checking current Flyway version..."

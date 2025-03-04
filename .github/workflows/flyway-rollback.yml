@@ -31,7 +31,7 @@ jobs:
       - name: Run Rollback SQL Script (Undo V7)
         run: |
           echo "Rolling back to V6 by running rollback SQL script..."
-          sqlcmd -S localhost -d ArgaamScreener_DEV -U $env:DB_USER -P $env:DB_PASSWORD -i rollback-scripts/V7__rollback.sql
+          "C:\Program Files\SqlCmd\sqlcmd.exe" -S localhost -d ArgaamScreener_DEV -U $env:DB_USER -P $env:DB_PASSWORD -i rollback-scripts/V7__rollback.sql
         shell: powershell
         env:
           DB_USER: ${{ secrets.DB_USER }}

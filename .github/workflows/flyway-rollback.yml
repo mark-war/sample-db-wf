@@ -20,10 +20,39 @@ jobs:
 
       - name: Install sqlcmd (SQL Server Command Line Tools)
         run: |
-          # Install SQL Server command-line tools
-          Invoke-WebRequest -Uri https://aka.ms/sqlcmdlinetools -OutFile sqlcmd.zip
-          Expand-Archive sqlcmd.zip -DestinationPath C:\opt\sqlcmd
-          [System.Environment]::SetEnvironmentVariable('PATH', "$env:PATH;C:\opt\sqlcmd", [System.EnvironmentVariableTarget]::Machine)
+          # Define the download URL and the target path
+          $url = "https://aka.ms/sqlcmdlinetools"
+          $zipFilePath = "sqlcmd.zip"
+          $destinationPath = "C:\opt\sqlcmd"
+
+          # Download the file
+          Write-Host "Downloading SQL Server Command Line Tools..."
+          Invoke-WebRequest -Uri $url -OutFile $zipFilePath
+
+          # Check if the file was downloaded successfully
+          if (-Not (Test-Path $zipFilePath)) {
+              Write-Error "The ZIP file could not be downloaded. Exiting."
+              exit 1
+          }
+
+          # Check if the ZIP file is valid by attempting to open it
+          try {
+              $zip = [System.IO.Compression.ZipFile]::OpenRead($zipFilePath)
+              $zip.Close()
+          } catch {
+              Write-Error "The ZIP file is corrupted or invalid. Exiting."
+              exit 1
+          }
+
+          # Extract the ZIP file
+          Write-Host "Extracting SQL Server Command Line Tools..."
+          Expand-Archive -Path $zipFilePath -DestinationPath $destinationPath
+
+          # Add the extracted tools to the system PATH
+          Write-Host "Adding SQL Server tools to PATH..."
+          [System.Environment]::SetEnvironmentVariable('PATH', "$env:PATH;$destinationPath", [System.EnvironmentVariableTarget]::Machine)
+
+          Write-Host "SQL Server Command Line Tools installed successfully."
 
       - name: Check Current Flyway Version
         run: |

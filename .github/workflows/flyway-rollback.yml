@@ -1,0 +1,48 @@
+name: Rollback Flyway to V6
+
+on:
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  flyway-rollback:
+    runs-on: [self-hosted, windows]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Flyway
+        shell: powershell
+        run: |
+          $flywayPath = "C:\opt\flyway\flyway-11.3.1"
+          echo "Using Flyway path: $flywayPath"
+          echo "FLYWAY_HOME=$flywayPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+
+      - name: Check Current Flyway Version
+        run: |
+          echo "Checking current Flyway version..."
+          & "C:\opt\flyway\flyway-11.3.1\flyway.cmd" info -url="$env:DB_URL" -user="$env:DB_USER" -password="$env:DB_PASSWORD"
+        shell: powershell
+        env:
+          DB_URL: "jdbc:sqlserver://localhost:1433;databaseName=ArgaamScreener_DEV;encrypt=false;trustServerCertificate=true;applicationName=Flyway"
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      - name: Run Rollback SQL Script (Undo V7)
+        run: |
+          echo "Rolling back to V6 by running rollback SQL script..."
+          sqlcmd -S localhost -d ArgaamScreener_DEV -U $env:DB_USER -P $env:DB_PASSWORD -i rollback-scripts/V7__rollback.sql
+        shell: powershell
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      - name: Re-baseline Flyway to V6
+        run: |
+          echo "Re-baselining Flyway to V6..."
+          & "C:\opt\flyway\flyway-11.3.1\flyway.cmd" baseline -baselineVersion=6 -url="$env:DB_URL" -user="$env:DB_USER" -password="$env:DB_PASSWORD"
+        shell: powershell
+        env:
+          DB_URL: "jdbc:sqlserver://localhost:1433;databaseName=ArgaamScreener_DEV;encrypt=false;trustServerCertificate=true;applicationName=Flyway"
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

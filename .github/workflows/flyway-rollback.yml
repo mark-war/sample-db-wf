@@ -40,6 +40,9 @@ jobs:
       - name: Re-baseline Flyway to V6
         run: |
           echo "Re-baselining Flyway to V6..."
+          # Step 1: Clean the schema (caution: drops all objects and data)
+          & "C:\opt\flyway\flyway-11.3.1\flyway.cmd" clean -url="$env:DB_URL" -user="$env:DB_USER" -password="$env:DB_PASSWORD"
+          # Step 2: Baseline to version 6
           & "C:\opt\flyway\flyway-11.3.1\flyway.cmd" baseline -baselineVersion=6 -url="$env:DB_URL" -user="$env:DB_USER" -password="$env:DB_PASSWORD"
         shell: powershell
         env:

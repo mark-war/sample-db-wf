@@ -25,23 +25,30 @@ jobs:
           $zipFilePath = "sqlcmd.zip"
           $destinationPath = "C:\opt\sqlcmd"
 
-          # Download the file
+          # Download the file and follow redirects
           Write-Host "Downloading SQL Server Command Line Tools..."
-          Invoke-WebRequest -Uri $url -OutFile $zipFilePath
+          Invoke-WebRequest -Uri $url -OutFile $zipFilePath -Method GET -MaximumRedirection 5
 
           # Check if the file was downloaded successfully
           if (-Not (Test-Path $zipFilePath)) {
-              Write-Error "The ZIP file could not be downloaded. Exiting."
-              exit 1
+            Write-Error "The ZIP file could not be downloaded. Exiting."
+            exit 1
+          }
+
+          # Verify that the file is a ZIP file by checking its content type
+          $fileType = [System.IO.Path]::GetExtension($zipFilePath)
+          if ($fileType -ne ".zip") {
+            Write-Error "The downloaded file is not a ZIP file. Exiting."
+            exit 1
           }
 
           # Check if the ZIP file is valid by attempting to open it
           try {
-              $zip = [System.IO.Compression.ZipFile]::OpenRead($zipFilePath)
-              $zip.Close()
+            $zip = [System.IO.Compression.ZipFile]::OpenRead($zipFilePath)
+            $zip.Close()
           } catch {
-              Write-Error "The ZIP file is corrupted or invalid. Exiting."
-              exit 1
+            Write-Error "The ZIP file is corrupted or invalid. Exiting."
+            exit 1
           }
 
           # Extract the ZIP file
